@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kick With Anna — Session Tracker</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f0f4f8; color: #1a202c; padding: 24px 16px 60px; }
+  .wrap { max-width: 860px; margin: 0 auto; }
+  header { margin-bottom: 20px; }
+  header h1 { font-size: 26px; font-weight: 800; }
+  header .sub { color: #64748b; font-size: 14px; margin-top: 4px; }
+  .stats { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 28px; }
+  .stat { background: white; border-radius: 12px; padding: 14px 20px; box-shadow: 0 2px 8px rgba(0,0,0,.06); flex: 1; min-width: 120px; text-align: center; }
+  .stat .num { font-size: 26px; font-weight: 800; }
+  .stat .lbl { font-size: 12px; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+  .stat.green .num { color: #16a34a; } .stat.yellow .num { color: #d97706; } .stat.red .num { color: #dc2626; }
+  h2 { font-size: 17px; font-weight: 800; margin: 28px 0 12px; }
+  .card { background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,.06); padding: 16px 18px; margin-bottom: 12px; display: flex; gap: 18px; align-items: flex-start; }
+  .card.confirmed { border-left: 5px solid #16a34a; }
+  .card.done { border-left: 5px solid #cbd5e1; opacity: 0.65; }
+  .card.recurring { border-left: 5px solid #2563eb; }
+  .card.pending { border-left: 5px solid #d97706; }
+  .card.needs { border-left: 5px solid #dc2626; display: block; }
+  .datecol { text-align: center; min-width: 64px; }
+  .datecol .day { font-size: 26px; font-weight: 800; line-height: 1; }
+  .datecol .mon { font-size: 12px; color: #64748b; font-weight: 700; text-transform: uppercase; }
+  .datecol .time { font-size: 13px; color: #2563eb; font-weight: 700; margin-top: 4px; }
+  .info .kid { font-weight: 800; font-size: 16px; }
+  .info .parent { font-size: 13px; color: #475569; margin-top: 2px; }
+  .info .notes { font-size: 13px; color: #64748b; font-style: italic; margin-top: 6px; }
+  .badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 99px; margin-left: 6px; vertical-align: middle; }
+  .badge.rec { background: #dbeafe; color: #2563eb; }
+  .badge.conf { background: #dcfce7; color: #16a34a; }
+  .badge.pend { background: #fef3c7; color: #d97706; }
+  .msgbox { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; font-size: 13px; margin-top: 10px; color: #334155; }
+  .copybtn { background: #1e3a5f; color: white; border: none; border-radius: 6px; padding: 6px 14px; font-size: 12px; font-weight: 700; cursor: pointer; margin-top: 8px; }
+  .copybtn:hover { background: #2563eb; }
+  table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,.06); font-size: 13px; }
+  th { background: #1e3a5f; color: white; text-align: left; padding: 10px 12px; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; }
+  td { padding: 10px 12px; border-top: 1px solid #f1f5f9; vertical-align: top; }
+  .st-conf { color: #16a34a; font-weight: 700; } .st-pend { color: #d97706; font-weight: 700; } .st-needs { color: #dc2626; font-weight: 700; } .st-rec { color: #2563eb; font-weight: 700; }
+  .tablewrap { overflow-x: auto; }
+  #pw-overlay { position: fixed; inset: 0; background: #f0f4f8; display: flex; align-items: center; justify-content: center; z-index: 9999; }
+  #pw-box { background: white; border-radius: 16px; padding: 40px 36px; box-shadow: 0 8px 32px rgba(0,0,0,.12); text-align: center; max-width: 360px; width: 90%; }
+  #pw-box h2 { font-size: 20px; font-weight: 800; color: #1a202c; margin-bottom: 6px; }
+  #pw-box p { color: #64748b; font-size: 13px; margin-bottom: 24px; }
+  #pw-input { width: 100%; border: 1.5px solid #e2e8f0; border-radius: 8px; padding: 10px 14px; font-size: 15px; outline: none; margin-bottom: 12px; }
+  #pw-input:focus { border-color: #3b82f6; }
+  #pw-btn { width: 100%; background: #1e3a5f; color: white; border: none; border-radius: 8px; padding: 11px; font-size: 14px; font-weight: 700; cursor: pointer; }
+  #pw-btn:hover { background: #2563eb; }
+  #pw-error { color: #dc2626; font-size: 12px; margin-top: 8px; display: none; }
+</style>
+<script>
+  (function(){
+    var k = 'KickWithAnna2026';
+    var stored = sessionStorage.getItem('kwa_auth');
+    function showOverlay(){
+      document.addEventListener('DOMContentLoaded', function(){
+        var overlay = document.getElementById('pw-overlay');
+        var btn = document.getElementById('pw-btn');
+        var inp = document.getElementById('pw-input');
+        var err = document.getElementById('pw-error');
+        btn.addEventListener('click', check);
+        inp.addEventListener('keydown', function(e){ if(e.key==='Enter') check(); });
+        function check(){
+          if(inp.value === k){ sessionStorage.setItem('kwa_auth','1'); overlay.remove(); }
+          else { err.style.display='block'; inp.value=''; inp.focus(); }
+        }
+      });
+    }
+    if(stored !== '1') showOverlay();
+    else document.addEventListener('DOMContentLoaded', function(){ var o=document.getElementById('pw-overlay'); if(o) o.remove(); });
+  })();
+  function copyMsg(id, btn){
+    navigator.clipboard.writeText(document.getElementById(id).innerText).then(function(){
+      var t = btn.innerText; btn.innerText = 'Copied! ✓';
+      setTimeout(function(){ btn.innerText = t; }, 1500);
+    });
+  }
+</script>
+</head>
+<body>
+<div id="pw-overlay">
+  <div id="pw-box">
+    <h2>⚽ Kick With Anna</h2>
+    <p>Session tracker — private access only</p>
+    <input id="pw-input" type="password" placeholder="Enter password" autofocus />
+    <button id="pw-btn">Unlock</button>
+    <div id="pw-error">Incorrect password. Try again.</div>
+  </div>
+</div>
+<div class="wrap">
+  <header>
+    <h1>⚽ Kick With Anna — Session Tracker</h1>
+    <div class="sub">Updated Monday, June 22, 2026 · 17 total inquiries</div>
+  </header>
+
+  <div class="stats">
+    <div class="stat"><div class="num">17</div><div class="lbl">Total</div></div>
+    <div class="stat green"><div class="num">8</div><div class="lbl">Confirmed</div></div>
+    <div class="stat yellow"><div class="num">9</div><div class="lbl">Pending</div></div>
+    <div class="stat red"><div class="num">0</div><div class="lbl">Needs Response</div></div>
+  </div>
+
+  <h2>✅ All Sessions</h2>
+
+  <div class="card done">
+    <div class="datecol"><div class="day">12</div><div class="mon">Jun · Fri</div><div class="time">9:15 AM</div></div>
+    <div class="info">
+      <div class="kid">Sonja — 1 girl (age 6) <span class="badge rec">Group</span></div>
+      <div class="parent">Cesley Bergsten · 952-715-9588</div>
+      <div class="notes">First session, 1 girl attended. Paid $15 ✓ (+$3 tip)</div>
+    </div>
+  </div>
+
+  <div class="card done">
+    <div class="datecol"><div class="day">12</div><div class="mon">Jun · Fri</div><div class="time">10:15 AM</div></div>
+    <div class="info">
+      <div class="kid">Cole Marrache (age 9) <span class="badge conf">Private · 45 min</span></div>
+      <div class="parent">Joanne Marrache · 917-405-8463</div>
+      <div class="notes">Todd Park. Power behind kicks. Paid $15 ✓ (+$3 tip)</div>
+    </div>
+  </div>
+
+  <div class="card done">
+    <div class="datecol"><div class="day">12</div><div class="mon">Jun · Fri</div><div class="time">3:30 PM</div></div>
+    <div class="info">
+      <div class="kid">Tommy Yurecko (age 8) <span class="badge conf">Private · 45 min</span></div>
+      <div class="parent">April Yurecko · 612-226-6132</div>
+      <div class="notes">Tommy loved it — rebooked Jun 13 + Jun 24. Paid $12 ✓</div>
+    </div>
+  </div>
+
+  <div class="card done">
+    <div class="datecol"><div class="day">13</div><div class="mon">Jun · Sat</div><div class="time">9:00 AM</div></div>
+    <div class="info">
+      <div class="kid">Callan (9) + Andie (8) <span class="badge conf">Group</span></div>
+      <div class="parent">Ashley O'Hearn · ashleyejames@yahoo.com</div>
+      <div class="notes">Soccer skills session. Paid $20 cash ✓. Rebooked for Jun 17 at 11:15am.</div>
+    </div>
+  </div>
+
+  <div class="card done">
+    <div class="datecol"><div class="day">13</div><div class="mon">Jun · Sat</div><div class="time">10:15 AM</div></div>
+    <div class="info">
+      <div class="kid">Tommy Yurecko (age 8) <span class="badge conf">Private · 45 min</span></div>
+      <div class="parent">April Yurecko · 612-226-6132</div>
+      <div class="notes">Rebook session. Paid $15 ✓ (+$3 tip). Jun 24 at 10am still pending April's confirmation.</div>
+    </div>
+  </div>
+
+  <div class="card done">
+    <div class="datecol"><div class="day">14</div><div class="mon">Jun · Sun</div><div class="time">5:30 PM</div></div>
+    <div class="info">
+      <div class="kid">Ozan Ozturk (age 5) <span class="badge conf">Private</span></div>
+      <div class="parent">Menevis Cilizoglu · menevisc@gmail.com</div>
+      <div class="notes">Todd Park. General skills and fun. Paid $12 ✓</div>
+    </div>
+  </div>
+
+  <div class="card done">
+    <div class="datecol"><div class="day">15</div><div class="mon">Jun · Mon</div><div class="time">9:00 AM</div></div>
+    <div class="info">
+      <div class="kid">Sydney (age 8) <span class="badge conf">Private</span></div>
+      <div class="parent">Natalie Dunning · 952-240-7703</div>
+      <div class="notes">Todd Park. Dribbling and striking form. Payment pending ⏳</div>
+    </div>
+  </div>
+
+  <div class="card done">
+    <div class="datecol"><div class="day">15</div><div class="mon">Jun · Mon</div><div class="time">4:30 PM</div></div>
+    <div class="info">
+      <div class="kid">Eleanor (7) + Margot (5) <span class="badge conf">Group · 1 hr</span></div>
+      <div class="parent">Britta Anderson · anderson.britta.l@gmail.com</div>
+      <div class="notes">Sisters — learning basics. Had a blast! Paid $25 ✓ (+$5 tip)</div>
+    </div>
+  </div>
+
+  <div class="card confirmed">
+    <div class="datecol"><div class="day">26</div><div class="mon">Jun · Fri</div><div class="time">9:30 AM</div></div>
+    <div class="info">
+      <div class="kid">Callan (9) + Andie (8) <span class="badge conf">Group</span></div>
+      <div class="parent">Ashley O'Hearn · ashleyejames@yahoo.com</div>
+      <div class="notes">Rescheduled from Jun 17 (rain). Confirmed Fri Jun 26 at 9:30am.</div>
+    </div>
+  </div>
+
+  <div class="card confirmed">
+    <div class="datecol"><div class="day">23</div><div class="mon">Jun · Tue</div><div class="time">10:30 AM</div></div>
+    <div class="info">
+      <div class="kid">Leyla (age 4) <span class="badge conf">Private</span></div>
+      <div class="parent">Melissa · leamcali@gmail.com</div>
+      <div class="notes">Leyla loves to kick but no formal training — learning the basics. Melissa confirmed Jun 23 at 10:30am. Flexible on park.</div>
+    </div>
+  </div>
+
+  <div class="card confirmed">
+    <div class="datecol"><div class="day">23</div><div class="mon">Jun · Tue</div><div class="time">4:45 PM</div></div>
+    <div class="info">
+      <div class="kid">Eleanor (7) + Margot (5) <span class="badge conf">Group · Rebook</span></div>
+      <div class="parent">Britta Anderson · anderson.britta.l@gmail.com</div>
+      <div class="notes">Rebook after Jun 15 session. Ms. Anderson confirmed Tue Jun 23 at 4:45pm.</div>
+    </div>
+  </div>
+
+  <div class="card recurring">
+    <div class="datecol"><div class="day">26</div><div class="mon">Jun · Fri</div><div class="time">9:00 AM</div></div>
+    <div class="info">
+      <div class="kid">Sonja + girls (age 6) <span class="badge rec">Weekly · Fridays</span></div>
+      <div class="parent">Cesley Bergsten · 952-715-9588 · bombbigpapajo@outlook.com</div>
+      <div class="notes">Recurring Fridays 9am. Jun 12 done. Skipping Jun 19 (Anna at regionals). Next session Jun 26. Venmo after each session.</div>
+    </div>
+  </div>
+
+  <h2>⏳ Pending</h2>
+
+  <div class="card pending">
+    <div class="datecol"><div class="day">26</div><div class="mon">Jun · Fri</div><div class="time">PM (proposed)</div></div>
+    <div class="info">
+      <div class="kid">Hattie Chromiak (age 8) <span class="badge pend">Awaiting confirmation</span></div>
+      <div class="parent">Alissa Ochs · 763-242-9947 · alissaochs@gmail.com</div>
+      <div class="notes">Footwork around defenders. Anna offered Jun 26 afternoon — waiting for Alissa to confirm.</div>
+    </div>
+  </div>
+
+  <div class="card pending">
+    <div class="datecol"><div class="day">19+</div><div class="mon">Jun</div><div class="time">TBD</div></div>
+    <div class="info">
+      <div class="kid">Hannah (age 6) <span class="badge pend">Reschedule</span></div>
+      <div class="parent">Erin Chapin · 952-200-3297 · erinjonason@gmail.com</div>
+      <div class="notes">Broken toe — needs 1 more week. Available after Jun 19. Dribbling/tackling/shooting; goals at home (Parkwood Knolls).</div>
+    </div>
+  </div>
+
+  <div class="card pending">
+    <div class="datecol"><div class="day">✓</div><div class="mon">Jun 10</div><div class="time">Done</div></div>
+    <div class="info">
+      <div class="kid">Harley + friend (age 6) <span class="badge pend">Wants to rebook</span></div>
+      <div class="parent">Cassie Bonstrom · 612-720-4641 · cassie.bonstrom@gmail.com</div>
+      <div class="notes">Session completed Jun 10 at Todd Park. Harley loved it — follow up to rebook next session!</div>
+    </div>
+  </div>
+
+  <div class="card pending">
+    <div class="datecol"><div class="day">13</div><div class="mon">Jun · Sat</div><div class="time">9–11am</div></div>
+    <div class="info">
+      <div class="kid">Sanchez kid (age 8) <span class="badge pend">Awaiting confirmation</span></div>
+      <div class="parent">Bianca Sanchez · sanchez.abx@gmail.com</div>
+      <div class="notes">Anna proposed Sat Jun 13 at 9am, 10am, or 11am at Todd Park — waiting for Ms. Sanchez to pick a time.</div>
+    </div>
+  </div>
+
+  <div class="card pending">
+    <div class="datecol"><div class="day">16</div><div class="mon">Jun · Tue</div><div class="time">11:20 AM</div></div>
+    <div class="info">
+      <div class="kid">Beau (age 4) <span class="badge pend">Awaiting confirmation</span></div>
+      <div class="parent">Courtney Giles · 612-719-0287 · courtney.giles@abbott.com</div>
+      <div class="notes">Anna proposed Tue Jun 16 at 11:20am — waiting for Ms. Giles to confirm.</div>
+    </div>
+  </div>
+
+  <div class="card pending">
+    <div class="datecol"><div class="day">24</div><div class="mon">Jun · Wed</div><div class="time">10:00 AM</div></div>
+    <div class="info">
+      <div class="kid">Tommy Yurecko (age 8) <span class="badge pend">Awaiting confirmation</span></div>
+      <div class="parent">April Yurecko · 612-226-6132 · aprilyurecko@gmail.com</div>
+      <div class="notes">Anna proposed Jun 24 at 10am — waiting for April to confirm.</div>
+    </div>
+  </div>
+
+  <div class="card pending">
+    <div class="datecol"><div class="day">25</div><div class="mon">Jun · Thu</div><div class="time">11:20 AM</div></div>
+    <div class="info">
+      <div class="kid">Molly (age 10) <span class="badge pend">Awaiting confirmation</span></div>
+      <div class="parent">Kristyn Campbell · 303-919-7071 · kristyncampbell1@gmail.com</div>
+      <div class="notes">Anna proposed Thu Jun 25 at 11:20am — waiting for Ms. Campbell to confirm. West Edina area, flexible on location.</div>
+    </div>
+  </div>
+
+  <div class="card pending">
+    <div class="datecol"><div class="day">TBD</div><div class="mon">Flexible</div><div class="time">Any time</div></div>
+    <div class="info">
+      <div class="kid">Olivia (age 9) <span class="badge pend">Anna responding</span></div>
+      <div class="parent">Brooke Baade · 605-999-2333 · brooke.baade@gmail.com</div>
+      <div class="notes">Private. Dribbling confidence, possession, and defense. Sat any time; also Mon/Wed/Fri/Sun after 3:30pm.</div>
+    </div>
+  </div>
+
+  <div class="card pending">
+    <div class="datecol"><div class="day">TBD</div><div class="mon">Tue/Sat/Sun</div><div class="time">Morn or Aft</div></div>
+    <div class="info">
+      <div class="kid">Olivia + Eleanor (age 5) <span class="badge pend">Anna responding</span></div>
+      <div class="parent">Amanda Sperl · 320-249-2207 · ajsperl@gmail.com</div>
+      <div class="notes">Group · 2 kids early in soccer journey. Near Blake School, flexible on location.</div>
+    </div>
+  </div>
+
+  <div class="card pending">
+    <div class="datecol"><div class="day">TBD</div><div class="mon">Any day</div><div class="time">Evenings</div></div>
+    <div class="info">
+      <div class="kid">Benji (age 5) <span class="badge pend">Anna responding</span></div>
+      <div class="parent">Erin Stockemer</div>
+      <div class="notes">Group. Beginner. Any day works, evenings preferred.</div>
+    </div>
+  </div>
+
+  <div style="background:white; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,.06); padding:20px; color:#16a34a; font-weight:700; font-size:14px; text-align:center;">
+    🎉 All caught up — Anna has responded to everyone!
+  </div>
+
+  <h2>📋 All Inquiries</h2>
+  <div class="tablewrap">
+  <table>
+    <tr><th>Submitted</th><th>Kid</th><th>Parent</th><th>Contact</th><th>Type</th><th>Status</th><th>Session Date</th></tr>
+    <tr><td>Jun 8</td><td>Tommy Yurecko (8)</td><td>April Yurecko</td><td>612-226-6132</td><td>Private</td><td class="st-conf">CONFIRMED – Rebooking</td><td>Fri Jun 12 · 3:30pm (done) · Sat Jun 13 · 10:15am · Jun 24 · 10am (pending)</td></tr>
+    <tr><td>Jun 9</td><td>Cole Marrache (9)</td><td>Joanne Marrache</td><td>917-405-8463</td><td>Private</td><td class="st-conf">CONFIRMED</td><td>Fri Jun 12 · 10:15am</td></tr>
+    <tr><td>Jun 8</td><td>Sonja + 3 girls (6)</td><td>Cesley Bergsten</td><td>952-715-9588</td><td>Group</td><td class="st-rec">CONFIRMED · Recurring</td><td>Fri Jun 12 · 9am, then Fridays (skip wk of Jun 18)</td></tr>
+    <tr><td>Jun 10</td><td>Ozan Ozturk (5)</td><td>Menevis</td><td>menevisc@gmail.com</td><td>Private</td><td class="st-conf">CONFIRMED</td><td>Sun Jun 14 · 5:30pm</td></tr>
+    <tr><td>Jun 8</td><td>Hattie Chromiak (8)</td><td>Alissa Ochs</td><td>763-242-9947</td><td>Private</td><td class="st-pend">PENDING</td><td>Jun 26 PM proposed</td></tr>
+    <tr><td>Jun 8</td><td>Hannah (6)</td><td>Erin Chapin</td><td>952-200-3297</td><td>Private</td><td class="st-pend">PENDING RESCHEDULE</td><td>After Jun 19</td></tr>
+    <tr><td>Jun 9</td><td>Harley + friend (6)</td><td>Cassie Bonstrom</td><td>612-720-4641</td><td>Private + Group</td><td class="st-pend">COMPLETED · Rebook</td><td>Done Jun 10</td></tr>
+    <tr><td>Jun 10</td><td>Sanchez (8)</td><td>Bianca Sanchez</td><td>sanchez.abx@gmail.com</td><td>Private</td><td class="st-pend">PENDING</td><td>Sat Jun 13 · 9/10/11am (proposed)</td></tr>
+    <tr><td>Jun 10</td><td>Leyla (4)</td><td>Melissa</td><td>leamcali@gmail.com</td><td>Private</td><td class="st-conf">CONFIRMED</td><td>Tue Jun 23 · 10:30am</td></tr>
+    <tr><td>Jun 10</td><td>Eleanor (7) + Margot (5)</td><td>Britta Anderson</td><td>anderson.britta.l@gmail.com</td><td>Group</td><td class="st-conf">CONFIRMED · Recurring</td><td>Mon Jun 15 (done) · Tue Jun 23 · 4:45pm</td></tr>
+    <tr><td>Jun 10</td><td>Callan (9) + Andie (8)</td><td>Ashley O'Hearn</td><td>ashleyejames@yahoo.com</td><td>Group</td><td class="st-conf">CONFIRMED</td><td>Jun 13 done · Fri Jun 26 · 9:30am</td></tr>
+    <tr><td>Jun 11</td><td>Sydney (8)</td><td>Natalie Dunning</td><td>dunningnm@gmail.com · 952-240-7703</td><td>Private</td><td class="st-conf">CONFIRMED</td><td>Mon Jun 15 · 9am</td></tr>
+    <tr><td>Jun 12</td><td>Molly (10)</td><td>Kristyn Campbell</td><td>kristyncampbell1@gmail.com · 303-919-7071</td><td>Private</td><td class="st-pend">PENDING</td><td>Thu Jun 25 · 11:20am (proposed)</td></tr>
+    <tr><td>Jun 12</td><td>Beau (4)</td><td>Courtney Giles</td><td>courtney.giles@abbott.com · 612-719-0287</td><td>Group</td><td class="st-pend">PENDING</td><td>Tue Jun 16 · 11:20am (proposed)</td></tr>
+    <tr><td>Jun 15</td><td>Olivia (9)</td><td>Brooke Baade</td><td>brooke.baade@gmail.com · 605-999-2333</td><td>Private</td><td class="st-pend">PENDING – Anna responding</td><td>Saturday TBD</td></tr>
+    <tr><td>Jun 15</td><td>Olivia + Eleanor (5)</td><td>Amanda Sperl</td><td>ajsperl@gmail.com · 320-249-2207</td><td>Group</td><td class="st-pend">PENDING – Anna responding</td><td>Tue/Sat/Sun TBD</td></tr>
+    <tr><td>Jun 20</td><td>Benji (5)</td><td>Erin Stockemer</td><td>—</td><td>Group</td><td class="st-pend">PENDING – Anna responding</td><td>Any day · evenings TBD</td></tr>
+  </table>
+  </div>
+
+  <h2>💰 Business Finances</h2>
+
+  <!-- Income breakdown -->
+  <div style="background:white; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,.06); padding:20px; margin-bottom:12px;">
+    <div style="font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; color:#64748b; margin-bottom:14px;">💵 Income — Session Breakdown</div>
+    <table style="width:100%; font-size:13px; border-collapse:collapse;">
+      <thead>
+        <tr style="border-bottom:2px solid #e2e8f0;">
+          <th style="text-align:left; padding:6px 8px 8px 0; color:#64748b; font-size:11px; text-transform:uppercase; letter-spacing:.04em;">Date</th>
+          <th style="text-align:left; padding:6px 8px 8px 0; color:#64748b; font-size:11px; text-transform:uppercase; letter-spacing:.04em;">Session</th>
+          <th style="text-align:left; padding:6px 8px 8px 0; color:#64748b; font-size:11px; text-transform:uppercase; letter-spacing:.04em;">Type</th>
+          <th style="text-align:right; padding:6px 0 8px; color:#64748b; font-size:11px; text-transform:uppercase; letter-spacing:.04em;">Fee</th>
+          <th style="text-align:right; padding:6px 0 8px 8px; color:#64748b; font-size:11px; text-transform:uppercase; letter-spacing:.04em;">Paid</th>
+          <th style="text-align:right; padding:6px 0 8px; color:#64748b; font-size:11px; text-transform:uppercase; letter-spacing:.04em;">+/-</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid #f1f5f9;">
+          <td style="padding:8px 8px 8px 0; color:#475569; white-space:nowrap;">Jun 10</td>
+          <td style="padding:8px 8px 8px 0;">Harley + friend <span style="color:#64748b; font-size:12px;">(Cassie Bonstrom)</span></td>
+          <td style="padding:8px 8px 8px 0; color:#475569;">Group · 2 kids</td>
+          <td style="padding:8px 0; text-align:right; color:#475569;">$20</td>
+          <td style="padding:8px 0 8px 8px; text-align:right; font-weight:700; color:#16a34a;">$20</td>
+          <td style="padding:8px 0; text-align:right; color:#64748b; font-style:italic;">exact</td>
+        </tr>
+        <tr style="border-bottom:1px solid #f1f5f9;">
+          <td style="padding:8px 8px 8px 0; color:#475569; white-space:nowrap;">Jun 12</td>
+          <td style="padding:8px 8px 8px 0;">Cole Marrache <span style="color:#64748b; font-size:12px;">(Joanne Marrache)</span></td>
+          <td style="padding:8px 8px 8px 0; color:#475569;">Private · 45 min</td>
+          <td style="padding:8px 0; text-align:right; color:#475569;">$12</td>
+          <td style="padding:8px 0 8px 8px; text-align:right; font-weight:700; color:#16a34a;">$15</td>
+          <td style="padding:8px 0; text-align:right; font-weight:700; color:#d97706;">+$3 ✨</td>
+        </tr>
+        <tr style="border-bottom:1px solid #f1f5f9;">
+          <td style="padding:8px 8px 8px 0; color:#475569; white-space:nowrap;">Jun 12</td>
+          <td style="padding:8px 8px 8px 0;">Sonja group · 1 girl today <span style="color:#64748b; font-size:12px;">(Cesley Bergsten)</span></td>
+          <td style="padding:8px 8px 8px 0; color:#475569;">Private rate</td>
+          <td style="padding:8px 0; text-align:right; color:#475569;">$12</td>
+          <td style="padding:8px 0 8px 8px; text-align:right; font-weight:700; color:#16a34a;">$15</td>
+          <td style="padding:8px 0; text-align:right; font-weight:700; color:#d97706;">+$3 ✨</td>
+        </tr>
+        <tr style="border-bottom:1px solid #f1f5f9;">
+          <td style="padding:8px 8px 8px 0; color:#475569; white-space:nowrap;">Jun 12</td>
+          <td style="padding:8px 8px 8px 0;">Tommy Yurecko <span style="color:#64748b; font-size:12px;">(April Yurecko)</span></td>
+          <td style="padding:8px 8px 8px 0; color:#475569;">Private · 45 min</td>
+          <td style="padding:8px 0; text-align:right; color:#475569;">$12</td>
+          <td style="padding:8px 0 8px 8px; text-align:right; font-weight:700; color:#16a34a;">$12</td>
+          <td style="padding:8px 0; text-align:right; color:#64748b; font-style:italic;">exact</td>
+        </tr>
+        <tr style="border-bottom:1px solid #f1f5f9;">
+          <td style="padding:8px 8px 8px 0; color:#475569; white-space:nowrap;">Jun 13</td>
+          <td style="padding:8px 8px 8px 0;">Tommy Yurecko <span style="color:#64748b; font-size:12px;">(April Yurecko)</span></td>
+          <td style="padding:8px 8px 8px 0; color:#475569;">Private · 45 min</td>
+          <td style="padding:8px 0; text-align:right; color:#475569;">$12</td>
+          <td style="padding:8px 0 8px 8px; text-align:right; font-weight:700; color:#16a34a;">$15</td>
+          <td style="padding:8px 0; text-align:right; font-weight:700; color:#d97706;">+$3 ✨</td>
+        </tr>
+        <tr style="border-bottom:1px solid #f1f5f9;">
+          <td style="padding:8px 8px 8px 0; color:#475569; white-space:nowrap;">Jun 13</td>
+          <td style="padding:8px 8px 8px 0;">Callan + Andie <span style="color:#64748b; font-size:12px;">(Ashley O'Hearn)</span></td>
+          <td style="padding:8px 8px 8px 0; color:#475569;">Group · 2 kids</td>
+          <td style="padding:8px 0; text-align:right; color:#475569;">$20</td>
+          <td style="padding:8px 0 8px 8px; text-align:right; font-weight:700; color:#16a34a;">$20</td>
+          <td style="padding:8px 0; text-align:right; color:#64748b; font-style:italic;">exact</td>
+        </tr>
+        <tr style="border-bottom:1px solid #f1f5f9;">
+          <td style="padding:8px 8px 8px 0; color:#475569; white-space:nowrap;">Jun 14</td>
+          <td style="padding:8px 8px 8px 0;">Ozan Ozturk <span style="color:#64748b; font-size:12px;">(Menevis Cilizoglu)</span></td>
+          <td style="padding:8px 8px 8px 0; color:#475569;">Private</td>
+          <td style="padding:8px 0; text-align:right; color:#475569;">$12</td>
+          <td style="padding:8px 0 8px 8px; text-align:right; font-weight:700; color:#16a34a;">$12</td>
+          <td style="padding:8px 0; text-align:right; color:#64748b; font-style:italic;">exact</td>
+        </tr>
+        <tr style="border-bottom:1px solid #f1f5f9;">
+          <td style="padding:8px 8px 8px 0; color:#475569; white-space:nowrap;">Jun 15</td>
+          <td style="padding:8px 8px 8px 0;">Eleanor + Margot <span style="color:#64748b; font-size:12px;">(Britta Anderson)</span></td>
+          <td style="padding:8px 8px 8px 0; color:#475569;">Group · 2 kids</td>
+          <td style="padding:8px 0; text-align:right; color:#475569;">$20</td>
+          <td style="padding:8px 0 8px 8px; text-align:right; font-weight:700; color:#16a34a;">$25</td>
+          <td style="padding:8px 0; text-align:right; font-weight:700; color:#d97706;">+$5 ✨</td>
+        </tr>
+        <tr style="border-bottom:1px solid #f1f5f9;">
+          <td style="padding:8px 8px 8px 0; color:#475569; white-space:nowrap;">Jun 15</td>
+          <td style="padding:8px 8px 8px 0;">Sydney <span style="color:#64748b; font-size:12px;">(Natalie Dunning)</span></td>
+          <td style="padding:8px 8px 8px 0; color:#475569;">Private</td>
+          <td style="padding:8px 0; text-align:right; color:#475569;">$12</td>
+          <td style="padding:8px 0 8px 8px; text-align:right; font-weight:700; color:#d97706;">pending</td>
+          <td style="padding:8px 0; text-align:right; color:#64748b; font-style:italic;">—</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr style="border-top:2px solid #e2e8f0;">
+          <td colspan="3" style="padding:10px 0 0; font-weight:800;">Totals</td>
+          <td style="padding:10px 0 0; text-align:right; color:#475569; font-weight:700;">$132</td>
+          <td style="padding:10px 0 0 8px; text-align:right; font-weight:800; color:#16a34a;">$134 + $12 pending</td>
+          <td style="padding:10px 0 0; text-align:right; font-weight:800; color:#d97706;">+$14</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <!-- Expenses -->
+  <div style="background:white; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,.06); padding:20px; margin-bottom:12px;">
+    <div style="font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; color:#64748b; margin-bottom:14px;">🧾 Expenses</div>
+    <table style="width:100%; font-size:13px; border-collapse:collapse;">
+      <tr>
+        <td style="padding:6px 0; color:#475569;">Jun 2026</td>
+        <td style="padding:6px 0;">Website (edinagirls.com)</td>
+        <td style="padding:6px 0; text-align:right; font-weight:700; color:#dc2626;">$11</td>
+      </tr>
+      <tr style="border-top:2px solid #e2e8f0;">
+        <td colspan="2" style="padding:10px 0 0; font-weight:800;">Total Expenses</td>
+        <td style="padding:10px 0 0; text-align:right; font-weight:800; color:#dc2626;">$11</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Profit summary + bar chart -->
+  <div style="background:white; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,.06); padding:24px; margin-bottom:12px;">
+    <div style="font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; color:#64748b; margin-bottom:16px;">📊 Profit Summary</div>
+    <div style="margin-bottom:20px;">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+        <div style="width:84px; font-size:12px; color:#475569; font-weight:600; flex-shrink:0;">Income</div>
+        <div style="flex:1; background:#f1f5f9; border-radius:99px; height:24px; overflow:hidden;">
+          <div style="width:100%; background:#16a34a; height:100%; border-radius:99px; display:flex; align-items:center; padding-left:12px;">
+            <span style="font-size:12px; font-weight:700; color:white;">$134 collected</span>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+        <div style="width:84px; font-size:12px; color:#475569; font-weight:600; flex-shrink:0;">Expenses</div>
+        <div style="flex:1; background:#f1f5f9; border-radius:99px; height:24px; overflow:hidden;">
+          <div style="width:18%; background:#dc2626; height:100%; border-radius:99px; display:flex; align-items:center; padding-left:12px;">
+            <span style="font-size:12px; font-weight:700; color:white;">$11</span>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <div style="width:84px; font-size:12px; color:#475569; font-weight:600; flex-shrink:0;">Net Profit</div>
+        <div style="flex:1; background:#f1f5f9; border-radius:99px; height:24px; overflow:hidden;">
+          <div style="width:92%; background:#2563eb; height:100%; border-radius:99px; display:flex; align-items:center; padding-left:12px;">
+            <span style="font-size:12px; font-weight:700; color:white;">$123</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="background:#f0fdf4; border:1.5px solid #bbf7d0; border-radius:10px; padding:16px; text-align:center;">
+      <div style="font-size:32px; font-weight:800; color:#16a34a;">$123</div>
+      <div style="font-size:13px; color:#166534; font-weight:600; margin-top:2px;">Net Profit so far ⚽</div>
+    </div>
+  </div>
+
+  <!-- Payment status by session -->
+  <div style="background:white; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,.06); padding:20px; margin-bottom:16px;">
+    <div style="font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; color:#64748b; margin-bottom:14px;">✅ Completed Sessions — Payment Status</div>
+    <table style="width:100%; font-size:13px; border-collapse:collapse;">
+      <thead>
+        <tr style="border-bottom:2px solid #e2e8f0;">
+          <th style="text-align:left; padding:0 8px 8px 0; color:#64748b; font-size:11px; text-transform:uppercase; letter-spacing:.04em;">Date</th>
+          <th style="text-align:left; padding:0 8px 8px 0; color:#64748b; font-size:11px; text-transform:uppercase; letter-spacing:.04em;">Session</th>
+          <th style="text-align:left; padding:0 8px 8px 0; color:#64748b; font-size:11px; text-transform:uppercase; letter-spacing:.04em;">Family</th>
+          <th style="text-align:right; padding:0 0 8px; color:#64748b; font-size:11px; text-transform:uppercase; letter-spacing:.04em;">Fee</th>
+          <th style="text-align:right; padding:0 0 8px 0; color:#64748b; font-size:11px; text-transform:uppercase; letter-spacing:.04em; padding-left:12px;">Payment</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid #f1f5f9;">
+          <td style="padding:10px 8px 10px 0; color:#475569; white-space:nowrap;">Jun 10</td>
+          <td style="padding:10px 8px 10px 0;">Harley + friend (age 6)<br><span style="color:#64748b; font-size:12px;">Group · 2 kids · Todd Park 10am</span></td>
+          <td style="padding:10px 8px 10px 0; color:#475569;">Cassie Bonstrom</td>
+          <td style="padding:10px 0; text-align:right; color:#475569;">$20</td>
+          <td style="padding:10px 0 10px 12px; text-align:right;"><span style="background:#dcfce7; color:#16a34a; font-weight:700; font-size:12px; padding:3px 8px; border-radius:99px;">PAID $20 ✓</span></td>
+        </tr>
+        <tr style="border-bottom:1px solid #f1f5f9;">
+          <td style="padding:10px 8px 10px 0; color:#475569; white-space:nowrap;">Jun 13 · 9:00am</td>
+          <td style="padding:10px 8px 10px 0;">Callan (9) + Andie (8)<br><span style="color:#64748b; font-size:12px;">Group · 2 kids · cash</span></td>
+          <td style="padding:10px 8px 10px 0; color:#475569;">Ashley O'Hearn</td>
+          <td style="padding:10px 0; text-align:right; color:#475569;">$20</td>
+          <td style="padding:10px 0 10px 12px; text-align:right;"><span style="background:#dcfce7; color:#16a34a; font-weight:700; font-size:12px; padding:3px 8px; border-radius:99px;">PAID $20 ✓</span></td>
+        </tr>
+        <tr style="border-bottom:1px solid #f1f5f9;">
+          <td style="padding:10px 8px 10px 0; color:#475569; white-space:nowrap;">Jun 12 · 9:15am</td>
+          <td style="padding:10px 8px 10px 0;">Sonja group — 1 girl<br><span style="color:#64748b; font-size:12px;">Private rate · <span style="color:#d97706; font-weight:700;">+$3 tip ✨</span></span></td>
+          <td style="padding:10px 8px 10px 0; color:#475569;">Cesley Bergsten</td>
+          <td style="padding:10px 0; text-align:right; color:#475569;">$12</td>
+          <td style="padding:10px 0 10px 12px; text-align:right;"><span style="background:#dcfce7; color:#16a34a; font-weight:700; font-size:12px; padding:3px 8px; border-radius:99px;">PAID $15 ✓</span></td>
+        </tr>
+        <tr style="border-bottom:1px solid #f1f5f9;">
+          <td style="padding:10px 8px 10px 0; color:#475569; white-space:nowrap;">Jun 12 · 10:15am</td>
+          <td style="padding:10px 8px 10px 0;">Cole Marrache (age 9)<br><span style="color:#64748b; font-size:12px;">Private 45 min · Todd Park · <span style="color:#d97706; font-weight:700;">+$3 tip ✨</span></span></td>
+          <td style="padding:10px 8px 10px 0; color:#475569;">Joanne Marrache</td>
+          <td style="padding:10px 0; text-align:right; color:#475569;">$12</td>
+          <td style="padding:10px 0 10px 12px; text-align:right;"><span style="background:#dcfce7; color:#16a34a; font-weight:700; font-size:12px; padding:3px 8px; border-radius:99px;">PAID $15 ✓</span></td>
+        </tr>
+        <tr style="border-bottom:1px solid #f1f5f9;">
+          <td style="padding:10px 8px 10px 0; color:#475569; white-space:nowrap;">Jun 12 · 3:30pm</td>
+          <td style="padding:10px 8px 10px 0;">Tommy Yurecko (age 8)<br><span style="color:#64748b; font-size:12px;">Private 45 min</span></td>
+          <td style="padding:10px 8px 10px 0; color:#475569;">April Yurecko</td>
+          <td style="padding:10px 0; text-align:right; color:#475569;">$12</td>
+          <td style="padding:10px 0 10px 12px; text-align:right;"><span style="background:#dcfce7; color:#16a34a; font-weight:700; font-size:12px; padding:3px 8px; border-radius:99px;">PAID $12 ✓</span></td>
+        </tr>
+        <tr style="border-bottom:1px solid #f1f5f9;">
+          <td style="padding:10px 8px 10px 0; color:#475569; white-space:nowrap;">Jun 13 · 10:15am</td>
+          <td style="padding:10px 8px 10px 0;">Tommy Yurecko (age 8)<br><span style="color:#64748b; font-size:12px;">Private 45 min · <span style="color:#d97706; font-weight:700;">+$3 tip ✨</span></span></td>
+          <td style="padding:10px 8px 10px 0; color:#475569;">April Yurecko</td>
+          <td style="padding:10px 0; text-align:right; color:#475569;">$12</td>
+          <td style="padding:10px 0 10px 12px; text-align:right;"><span style="background:#dcfce7; color:#16a34a; font-weight:700; font-size:12px; padding:3px 8px; border-radius:99px;">PAID $15 ✓</span></td>
+        </tr>
+        <tr style="border-bottom:1px solid #f1f5f9;">
+          <td style="padding:10px 8px 10px 0; color:#475569; white-space:nowrap;">Jun 14 · 5:30pm</td>
+          <td style="padding:10px 8px 10px 0;">Ozan Ozturk (age 5)<br><span style="color:#64748b; font-size:12px;">Private · Todd Park</span></td>
+          <td style="padding:10px 8px 10px 0; color:#475569;">Menevis Cilizoglu</td>
+          <td style="padding:10px 0; text-align:right; color:#475569;">$12</td>
+          <td style="padding:10px 0 10px 12px; text-align:right;"><span style="background:#dcfce7; color:#16a34a; font-weight:700; font-size:12px; padding:3px 8px; border-radius:99px;">PAID $12 ✓</span></td>
+        </tr>
+        <tr style="border-bottom:1px solid #f1f5f9;">
+          <td style="padding:10px 8px 10px 0; color:#475569; white-space:nowrap;">Jun 15 · 9:00am</td>
+          <td style="padding:10px 8px 10px 0;">Sydney (age 8)<br><span style="color:#64748b; font-size:12px;">Private · Todd Park</span></td>
+          <td style="padding:10px 8px 10px 0; color:#475569;">Natalie Dunning</td>
+          <td style="padding:10px 0; text-align:right; color:#475569;">$12</td>
+          <td style="padding:10px 0 10px 12px; text-align:right;"><span style="background:#fef3c7; color:#d97706; font-weight:700; font-size:12px; padding:3px 8px; border-radius:99px;">PENDING ⏳</span></td>
+        </tr>
+        <tr>
+          <td style="padding:10px 8px 10px 0; color:#475569; white-space:nowrap;">Jun 15 · 4:30pm</td>
+          <td style="padding:10px 8px 10px 0;">Eleanor (7) + Margot (5)<br><span style="color:#64748b; font-size:12px;">Group 2 kids · 1 hr · <span style="color:#d97706; font-weight:700;">+$5 tip ✨</span></span></td>
+          <td style="padding:10px 8px 10px 0; color:#475569;">Britta Anderson</td>
+          <td style="padding:10px 0; text-align:right; color:#475569;">$20</td>
+          <td style="padding:10px 0 10px 12px; text-align:right;"><span style="background:#dcfce7; color:#16a34a; font-weight:700; font-size:12px; padding:3px 8px; border-radius:99px;">PAID $25 ✓</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+</body>
+</html>
