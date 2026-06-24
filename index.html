@@ -94,14 +94,14 @@
 <div class="wrap">
   <header>
     <h1>⚽ Kick With Anna — Session Tracker</h1>
-    <div class="sub">Updated Monday, June 22, 2026 · 17 total inquiries</div>
+    <div class="sub">Updated Tuesday, June 23, 2026 · 18 total inquiries</div>
   </header>
 
   <div class="stats">
-    <div class="stat"><div class="num">17</div><div class="lbl">Total</div></div>
+    <div class="stat"><div class="num">18</div><div class="lbl">Total</div></div>
     <div class="stat green"><div class="num">8</div><div class="lbl">Confirmed</div></div>
-    <div class="stat yellow"><div class="num">6</div><div class="lbl">Pending</div></div>
-    <div class="stat red"><div class="num">3</div><div class="lbl">Needs Response</div></div>
+    <div class="stat yellow"><div class="num">9</div><div class="lbl">Pending</div></div>
+    <div class="stat red"><div class="num">1</div><div class="lbl">Needs Response</div></div>
   </div>
 
   <h2>✅ All Sessions</h2>
@@ -187,21 +187,23 @@
     </div>
   </div>
 
-  <div class="card confirmed">
+  <div class="card done">
     <div class="datecol"><div class="day">23</div><div class="mon">Jun · Tue</div><div class="time">10:30 AM</div></div>
     <div class="info">
       <div class="kid">Leyla (age 4) <span class="badge conf">Private</span></div>
       <div class="parent">Melissa · leamcali@gmail.com</div>
-      <div class="notes">Leyla loves to kick but no formal training — learning the basics. Melissa confirmed Jun 23 at 10:30am. Flexible on park.</div>
+      <div class="notes">Leyla loves to kick but no formal training — learning the basics. Paid $15 ✓ (+$3 tip)</div>
     </div>
   </div>
 
-  <div class="card confirmed">
+  <div class="card pending">
     <div class="datecol"><div class="day">23</div><div class="mon">Jun · Tue</div><div class="time">4:45 PM</div></div>
     <div class="info">
-      <div class="kid">Eleanor (7) + Margot (5) <span class="badge conf">Group · Rebook</span></div>
+      <div class="kid">Eleanor (7) + Margot (5) <span class="badge pend">Rained out — reschedule</span></div>
       <div class="parent">Britta Anderson · anderson.britta.l@gmail.com</div>
-      <div class="notes">Rebook after Jun 15 session. Ms. Anderson confirmed Tue Jun 23 at 4:45pm.</div>
+      <div class="notes">Jun 23 session rained out. Anna to follow up to reschedule.</div>
+      <div class="msgbox" id="msg-britta-reschedule">Hi Ms. Anderson! This is Anna. So sorry about the rain today! I would love to reschedule Eleanor and Margot's session. What days/times work best for you this week or next? ⚽ Anna</div>
+      <button class="copybtn" onclick="copyMsg('msg-britta-reschedule', this)">Copy Text</button>
     </div>
   </div>
 
@@ -277,7 +279,7 @@
       <div class="kid">Tommy Yurecko (age 8) <span class="badge pend">Awaiting confirmation</span></div>
       <div class="parent">April Yurecko · <strong>612-226-6132</strong> · aprilyurecko@gmail.com</div>
       <div class="notes">Anna proposed Jun 24 at 10am — waiting for April to confirm.</div>
-      <div class="msgbox" id="msg-tommy24">Hi Ms. Yurecko! This is Anna. Just confirming Tommy's Jun 24 session at 10am. Does that still work? ⚽ Anna</div>
+      <div class="msgbox" id="msg-tommy24">Hi April! Just wanted to confirm Tommy's session on Jun 24 at 10am — does that still work? ⚽ Anna</div>
       <button class="copybtn" onclick="copyMsg('msg-tommy24', this)">Copy Text</button>
     </div>
   </div>
@@ -293,35 +295,42 @@
     </div>
   </div>
 
+  <div class="card pending">
+    <div class="datecol"><div class="day">TBD</div><div class="mon">New date</div><div class="time">needed</div></div>
+    <div class="info">
+      <div class="kid">Olivia + Eleanor (age 5) <span class="badge pend">Awaiting reply</span></div>
+      <div class="parent">Amanda Sperl · <strong>320-249-2207</strong> · ajsperl@gmail.com</div>
+      <div class="notes">Group · 2 kids early in soccer journey. Near Blake School. Tue/Sat/Sun mornings or afternoons. Anna responded Jun 22.</div>
+    </div>
+  </div>
+
+  <div class="card pending">
+    <div class="datecol"><div class="day">TBD</div><div class="mon">New date</div><div class="time">needed</div></div>
+    <div class="info">
+      <div class="kid">Olivia (age 9) <span class="badge pend">Awaiting reply</span></div>
+      <div class="parent">Brooke Baade · <strong>605-999-2333</strong> · brooke.baade@gmail.com</div>
+      <div class="notes">Private. Dribbling confidence, possession, and defense. Sat any time; also Mon/Wed/Fri/Sun after 3:30pm. Anna responded Jun 22.</div>
+    </div>
+  </div>
+
+  <div class="card pending">
+    <div class="datecol"><div class="day">TBD</div><div class="mon">New date</div><div class="time">needed</div></div>
+    <div class="info">
+      <div class="kid">Benji (age 5) <span class="badge pend">Awaiting reply</span></div>
+      <div class="parent">Erin Stockemer · <strong>no phone on file</strong></div>
+      <div class="notes">Group. Beginner. Any day works, evenings preferred. Anna responded Jun 22.</div>
+    </div>
+  </div>
+
   <h2>🔴 Needs Response</h2>
 
   <div class="card needs">
     <div class="info">
-      <div class="kid">Olivia + Eleanor (age 5) <span class="badge" style="background:#fee2e2;color:#dc2626;">Needs Response</span></div>
-      <div class="parent">Amanda Sperl · <strong>320-249-2207</strong> · ajsperl@gmail.com</div>
-      <div class="notes">Group · 2 kids early in soccer journey. Near Blake School. Tue/Sat/Sun mornings or afternoons.</div>
-      <div class="msgbox" id="msg-amanda">Hi Ms. Sperl! This is Anna Panetta from Kick with Anna. I am so sorry for the late reply, my soccer team was just in Chicago for the regional tournament and I do not have a phone :) I am back home now and would love to schedule a session for Olivia and Eleanor! When works best for you? ⚽ Anna</div>
-      <button class="copybtn" onclick="copyMsg('msg-amanda', this)">Copy Text</button>
-    </div>
-  </div>
-
-  <div class="card needs">
-    <div class="info">
-      <div class="kid">Olivia (age 9) <span class="badge" style="background:#fee2e2;color:#dc2626;">Needs Response</span></div>
-      <div class="parent">Brooke Baade · <strong>605-999-2333</strong> · brooke.baade@gmail.com</div>
-      <div class="notes">Private. Dribbling confidence, possession, and defense. Sat any time; also Mon/Wed/Fri/Sun after 3:30pm.</div>
-      <div class="msgbox" id="msg-brooke">Hi Ms. Baade! This is Anna Panetta from Kick with Anna. I am so sorry for the late reply, my soccer team was just in Chicago for the regional tournament and I do not have a phone :) I am back home now and would love to schedule a session for Olivia! When works best for you? ⚽ Anna</div>
-      <button class="copybtn" onclick="copyMsg('msg-brooke', this)">Copy Text</button>
-    </div>
-  </div>
-
-  <div class="card needs">
-    <div class="info">
-      <div class="kid">Benji (age 5) <span class="badge" style="background:#fee2e2;color:#dc2626;">Needs Response</span></div>
-      <div class="parent">Erin Stockemer · <strong>no phone on file</strong></div>
-      <div class="notes">Group. Beginner. Any day works, evenings preferred.</div>
-      <div class="msgbox" id="msg-erin">Hi Ms. Stockemer! This is Anna Panetta from Kick with Anna. I am so sorry for the late reply, my soccer team was just in Chicago for the regional tournament and I do not have a phone :) I am back home now and would love to schedule a session for Benji! When works best for you? ⚽ Anna</div>
-      <button class="copybtn" onclick="copyMsg('msg-erin', this)">Copy Text</button>
+      <div class="kid">George (7) + Henry (9) <span class="badge" style="background:#fee2e2;color:#dc2626;">Needs Response</span></div>
+      <div class="parent">Caroline Teasdale · <strong>952-649-8134</strong> · carolineacarlson@gmail.com</div>
+      <div class="notes">Group · 2 boys. Schedule varies by day and week. Available Mon–Thu mornings (8–11am) or afternoons (12–4pm).</div>
+      <div class="msgbox" id="msg-caroline">Hi Caroline! This is Anna Panetta from Kick with Anna ⚽ I would love to set up a session for George and Henry! I am flexible Mon–Thu mornings or afternoons — just let me know what works best for you and I can find a time that fits. ⚽ Anna</div>
+      <button class="copybtn" onclick="copyMsg('msg-caroline', this)">Copy Text</button>
     </div>
   </div>
 
@@ -337,8 +346,8 @@
     <tr><td>Jun 8</td><td>Hannah (6)</td><td>Erin Chapin</td><td>952-200-3297</td><td>Private</td><td class="st-pend">PENDING RESCHEDULE</td><td>After Jun 19</td></tr>
     <tr><td>Jun 9</td><td>Harley + friend (6)</td><td>Cassie Bonstrom</td><td>612-720-4641</td><td>Private + Group</td><td class="st-pend">COMPLETED · Rebook</td><td>Done Jun 10</td></tr>
     <tr><td>Jun 10</td><td>Sanchez (8)</td><td>Bianca Sanchez</td><td>sanchez.abx@gmail.com</td><td>Private</td><td class="st-pend">PENDING</td><td>Sat Jun 13 · 9/10/11am (proposed)</td></tr>
-    <tr><td>Jun 10</td><td>Leyla (4)</td><td>Melissa</td><td>leamcali@gmail.com</td><td>Private</td><td class="st-conf">CONFIRMED</td><td>Tue Jun 23 · 10:30am</td></tr>
-    <tr><td>Jun 10</td><td>Eleanor (7) + Margot (5)</td><td>Britta Anderson</td><td>anderson.britta.l@gmail.com</td><td>Group</td><td class="st-conf">CONFIRMED · Recurring</td><td>Mon Jun 15 (done) · Tue Jun 23 · 4:45pm</td></tr>
+    <tr><td>Jun 10</td><td>Leyla (4)</td><td>Melissa</td><td>leamcali@gmail.com</td><td>Private</td><td class="st-conf">COMPLETED · Paid $15 ✓</td><td>Tue Jun 23 · 10:30am ✓</td></tr>
+    <tr><td>Jun 10</td><td>Eleanor (7) + Margot (5)</td><td>Britta Anderson</td><td>anderson.britta.l@gmail.com</td><td>Group</td><td class="st-pend">PENDING RESCHEDULE – rain Jun 23</td><td>Jun 15 done · Jun 23 rained out · TBD</td></tr>
     <tr><td>Jun 10</td><td>Callan (9) + Andie (8)</td><td>Ashley O'Hearn</td><td>ashleyejames@yahoo.com</td><td>Group</td><td class="st-conf">CONFIRMED</td><td>Jun 13 done · Fri Jun 26 · 9:30am</td></tr>
     <tr><td>Jun 11</td><td>Sydney (8)</td><td>Natalie Dunning</td><td>dunningnm@gmail.com · 952-240-7703</td><td>Private</td><td class="st-conf">CONFIRMED</td><td>Mon Jun 15 · 9am</td></tr>
     <tr><td>Jun 12</td><td>Molly (10)</td><td>Kristyn Campbell</td><td>kristyncampbell1@gmail.com · 303-919-7071</td><td>Private</td><td class="st-pend">PENDING</td><td>Thu Jun 25 · 11:20am (proposed)</td></tr>
@@ -346,6 +355,7 @@
     <tr><td>Jun 15</td><td>Olivia (9)</td><td>Brooke Baade</td><td>brooke.baade@gmail.com · 605-999-2333</td><td>Private</td><td class="st-pend">PENDING – Anna responding</td><td>Saturday TBD</td></tr>
     <tr><td>Jun 15</td><td>Olivia + Eleanor (5)</td><td>Amanda Sperl</td><td>ajsperl@gmail.com · 320-249-2207</td><td>Group</td><td class="st-pend">PENDING – Anna responding</td><td>Tue/Sat/Sun TBD</td></tr>
     <tr><td>Jun 20</td><td>Benji (5)</td><td>Erin Stockemer</td><td>—</td><td>Group</td><td class="st-pend">PENDING – Anna responding</td><td>Any day · evenings TBD</td></tr>
+    <tr><td>Jun 23</td><td>George (7) + Henry (9)</td><td>Caroline Teasdale</td><td>carolineacarlson@gmail.com · 952-649-8134</td><td>Group</td><td class="st-needs">NEEDS RESPONSE</td><td>Mon–Thu · mornings or afternoons TBD</td></tr>
   </table>
   </div>
 
@@ -438,13 +448,21 @@
           <td style="padding:8px 0 8px 8px; text-align:right; font-weight:700; color:#16a34a;">$12</td>
           <td style="padding:8px 0; text-align:right; color:#64748b; font-style:italic;">exact</td>
         </tr>
+        <tr style="border-bottom:1px solid #f1f5f9;">
+          <td style="padding:8px 8px 8px 0; color:#475569; white-space:nowrap;">Jun 23</td>
+          <td style="padding:8px 8px 8px 0;">Leyla <span style="color:#64748b; font-size:12px;">(Melissa)</span></td>
+          <td style="padding:8px 8px 8px 0; color:#475569;">Private</td>
+          <td style="padding:8px 0; text-align:right; color:#475569;">$12</td>
+          <td style="padding:8px 0 8px 8px; text-align:right; font-weight:700; color:#16a34a;">$15</td>
+          <td style="padding:8px 0; text-align:right; font-weight:700; color:#d97706;">+$3 ✨</td>
+        </tr>
       </tbody>
       <tfoot>
         <tr style="border-top:2px solid #e2e8f0;">
           <td colspan="3" style="padding:10px 0 0; font-weight:800;">Totals</td>
-          <td style="padding:10px 0 0; text-align:right; color:#475569; font-weight:700;">$132</td>
-          <td style="padding:10px 0 0 8px; text-align:right; font-weight:800; color:#16a34a;">$146</td>
-          <td style="padding:10px 0 0; text-align:right; font-weight:800; color:#d97706;">+$14</td>
+          <td style="padding:10px 0 0; text-align:right; color:#475569; font-weight:700;">$144</td>
+          <td style="padding:10px 0 0 8px; text-align:right; font-weight:800; color:#16a34a;">$161</td>
+          <td style="padding:10px 0 0; text-align:right; font-weight:800; color:#d97706;">+$17</td>
         </tr>
       </tfoot>
     </table>
@@ -474,7 +492,7 @@
         <div style="width:84px; font-size:12px; color:#475569; font-weight:600; flex-shrink:0;">Income</div>
         <div style="flex:1; background:#f1f5f9; border-radius:99px; height:24px; overflow:hidden;">
           <div style="width:100%; background:#16a34a; height:100%; border-radius:99px; display:flex; align-items:center; padding-left:12px;">
-            <span style="font-size:12px; font-weight:700; color:white;">$146 collected</span>
+            <span style="font-size:12px; font-weight:700; color:white;">$161 collected</span>
           </div>
         </div>
       </div>
@@ -490,13 +508,13 @@
         <div style="width:84px; font-size:12px; color:#475569; font-weight:600; flex-shrink:0;">Net Profit</div>
         <div style="flex:1; background:#f1f5f9; border-radius:99px; height:24px; overflow:hidden;">
           <div style="width:92%; background:#2563eb; height:100%; border-radius:99px; display:flex; align-items:center; padding-left:12px;">
-            <span style="font-size:12px; font-weight:700; color:white;">$135</span>
+            <span style="font-size:12px; font-weight:700; color:white;">$150</span>
           </div>
         </div>
       </div>
     </div>
     <div style="background:#f0fdf4; border:1.5px solid #bbf7d0; border-radius:10px; padding:16px; text-align:center;">
-      <div style="font-size:32px; font-weight:800; color:#16a34a;">$135</div>
+      <div style="font-size:32px; font-weight:800; color:#16a34a;">$150</div>
       <div style="font-size:13px; color:#166534; font-weight:600; margin-top:2px;">Net Profit so far ⚽</div>
     </div>
   </div>
@@ -571,12 +589,19 @@
           <td style="padding:10px 0; text-align:right; color:#475569;">$12</td>
           <td style="padding:10px 0 10px 12px; text-align:right;"><span style="background:#dcfce7; color:#16a34a; font-weight:700; font-size:12px; padding:3px 8px; border-radius:99px;">PAID $12 ✓</span></td>
         </tr>
-        <tr>
+        <tr style="border-bottom:1px solid #f1f5f9;">
           <td style="padding:10px 8px 10px 0; color:#475569; white-space:nowrap;">Jun 15 · 4:30pm</td>
           <td style="padding:10px 8px 10px 0;">Eleanor (7) + Margot (5)<br><span style="color:#64748b; font-size:12px;">Group 2 kids · 1 hr · <span style="color:#d97706; font-weight:700;">+$5 tip ✨</span></span></td>
           <td style="padding:10px 8px 10px 0; color:#475569;">Britta Anderson</td>
           <td style="padding:10px 0; text-align:right; color:#475569;">$20</td>
           <td style="padding:10px 0 10px 12px; text-align:right;"><span style="background:#dcfce7; color:#16a34a; font-weight:700; font-size:12px; padding:3px 8px; border-radius:99px;">PAID $25 ✓</span></td>
+        </tr>
+        <tr>
+          <td style="padding:10px 8px 10px 0; color:#475569; white-space:nowrap;">Jun 23 · 10:30am</td>
+          <td style="padding:10px 8px 10px 0;">Leyla (age 4)<br><span style="color:#64748b; font-size:12px;">Private · <span style="color:#d97706; font-weight:700;">+$3 tip ✨</span></span></td>
+          <td style="padding:10px 8px 10px 0; color:#475569;">Melissa</td>
+          <td style="padding:10px 0; text-align:right; color:#475569;">$12</td>
+          <td style="padding:10px 0 10px 12px; text-align:right;"><span style="background:#dcfce7; color:#16a34a; font-weight:700; font-size:12px; padding:3px 8px; border-radius:99px;">PAID $15 ✓</span></td>
         </tr>
       </tbody>
     </table>
