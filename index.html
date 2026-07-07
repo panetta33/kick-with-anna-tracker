@@ -54,7 +54,7 @@
 </style>
 <script>
   (function(){
-    var k = 'KickWithAnna2026';
+    var k = 'KWA26';
     var stored = sessionStorage.getItem('kwa_auth');
     function showOverlay(){
       document.addEventListener('DOMContentLoaded', function(){
@@ -99,22 +99,13 @@
 
   <div class="stats">
     <div class="stat"><div class="num">20</div><div class="lbl">Total</div></div>
-    <div class="stat green"><div class="num">12</div><div class="lbl">Confirmed</div></div>
-    <div class="stat yellow"><div class="num">8</div><div class="lbl">Pending</div></div>
+    <div class="stat green"><div class="num">14</div><div class="lbl">Confirmed</div></div>
+    <div class="stat yellow"><div class="num">6</div><div class="lbl">Pending</div></div>
     <div class="stat red"><div class="num">0</div><div class="lbl">Needs Response</div></div>
     <div class="stat yellow"><div class="num">0</div><div class="lbl">Payment Review</div></div>
   </div>
 
   <h2>✅ Upcoming Sessions</h2>
-
-  <div class="card confirmed">
-    <div class="datecol"><div class="day">25</div><div class="mon">Jun · Thu</div><div class="time">11:00 AM</div></div>
-    <div class="info">
-      <div class="kid">Molly (age 10) <span class="badge conf">Private · 45 min</span></div>
-      <div class="parent">Kristyn Campbell · 303-919-7071 · kristyncampbell1@gmail.com</div>
-      <div class="notes">Todd Park. Confirmed TODAY Jun 25 at 11am – just Molly. Paid $20 ✓</div>
-    </div>
-  </div>
 
   <div class="card recurring">
     <div class="datecol"><div class="day">26</div><div class="mon">Jun · Fri</div><div class="time">9:00 AM</div></div>
@@ -125,15 +116,6 @@
     </div>
   </div>
 
-
-  <div class="card confirmed">
-    <div class="datecol"><div class="day">11</div><div class="mon">Jul · Sat</div><div class="time">10:30 AM</div></div>
-    <div class="info">
-      <div class="kid">Olivia + Eleanor (age 5) <span class="badge conf">Group</span></div>
-      <div class="parent">Amanda Sperl · 320-249-2207 · ajsperl@gmail.com</div>
-      <div class="notes">Two kids early in soccer journey. Confirmed Sat Jul 11 at 10:30am.</div>
-    </div>
-  </div>
 
   <div class="card confirmed">
     <div class="datecol"><div class="day">11</div><div class="mon">Jul · Sat</div><div class="time">10:50 AM</div></div>
@@ -149,7 +131,25 @@
     <div class="info">
       <div class="kid">Olivia + Eleanor (age 5) <span class="badge conf">Group</span></div>
       <div class="parent">Amanda Sperl · 320-249-2207 · ajsperl@gmail.com</div>
-      <div class="notes">Confirmed Sat Aug 1 at 10:00am.</div>
+      <div class="notes">Jul 11 session cancelled — rescheduled to Sat Aug 1 at 10:00am.</div>
+    </div>
+  </div>
+
+  <div class="card confirmed">
+    <div class="datecol"><div class="day">10</div><div class="mon">Jul · Fri</div><div class="time">10:00 AM</div></div>
+    <div class="info">
+      <div class="kid">Hannah (age 6) <span class="badge conf">Private</span></div>
+      <div class="parent">Erin Chapin · <strong>952-200-3297</strong> · erinjonason@gmail.com</div>
+      <div class="notes">Confirmed Fri Jul 10 at 10:00am. Dribbling/tackling/shooting; goals at home (Parkwood Knolls).</div>
+    </div>
+  </div>
+
+  <div class="card confirmed">
+    <div class="datecol"><div class="day">14</div><div class="mon">Jul · Tue</div><div class="time">10:30 AM</div></div>
+    <div class="info">
+      <div class="kid">Leyla (age 4) <span class="badge conf">Private</span></div>
+      <div class="parent">Melissa · leamcali@gmail.com</div>
+      <div class="notes">Rescheduled from Jun 30 — confirmed Tue Jul 14 at 10:30am.</div>
     </div>
   </div>
 
@@ -174,17 +174,6 @@
   </div>
 
   <div class="card pending">
-    <div class="datecol"><div class="day">TBD</div><div class="mon">Jul</div><div class="time">Reschedule</div></div>
-    <div class="info">
-      <div class="kid">Leyla (age 4) <span class="badge pend">Reschedule — date TBD</span></div>
-      <div class="parent">Melissa · leamcali@gmail.com</div>
-      <div class="notes">Jun 30 session got rescheduled — need to confirm the new date with Melissa.</div>
-      <div class="msgbox" id="msg-leyla-reschedule">Hi Melissa! This is Anna Panetta from Kick with Anna. Just following up to lock in the new date for Leyla's rescheduled session — what works for you? ⚽ Anna</div>
-      <button class="copybtn" onclick="copyMsg('msg-leyla-reschedule', this)">Copy Text</button>
-    </div>
-  </div>
-
-  <div class="card pending">
     <div class="datecol"><div class="day">TBD</div><div class="mon">Jun</div><div class="time">Reschedule</div></div>
     <div class="info">
       <div class="kid">Eleanor (7) + Margot (5) <span class="badge pend">Reschedule</span></div>
@@ -195,25 +184,12 @@
     </div>
   </div>
 
-<div class="card pending">
-    <div class="datecol"><div class="day">TBD</div><div class="mon">Jun</div><div class="time">After Jun 19</div></div>
-    <div class="info">
-      <div class="kid">Hannah (age 6) <span class="badge pend">Reschedule</span></div>
-      <div class="parent">Erin Chapin · <strong>952-200-3297</strong> · erinjonason@gmail.com</div>
-      <div class="notes">Broken toe — was unavailable. Anna proposed Jun 26 at 4:15pm (Jun 16) — no response. Anna followed up again Jun 23. Dribbling/tackling/shooting; goals at home (Parkwood Knolls). Awaiting reply.</div>
-      <div class="msgbox" id="msg-hannah">Hi Ms. Chapin! This is Anna Panetta from Kick with Anna. I know summer gets busy but my schedule is getting pretty full with trainings so I wanted to follow up! I hope Hannah's toe is feeling better. Would love to get something on the calendar whenever she is ready. ⚽ Anna</div>
-      <button class="copybtn" onclick="copyMsg('msg-hannah', this)">Copy Text</button>
-    </div>
-  </div>
-
   <div class="card pending">
-    <div class="datecol"><div class="day">✓</div><div class="mon">Jun 10</div><div class="time">Done</div></div>
+    <div class="datecol"><div class="day">✓</div><div class="mon">Jul 7</div><div class="time">Texted</div></div>
     <div class="info">
-      <div class="kid">Harley + friend (age 6) <span class="badge pend">Rebook week of Jun 30</span></div>
+      <div class="kid">Harley + friend (age 6) <span class="badge pend">Awaiting reply</span></div>
       <div class="parent">Cassie Bonstrom · <strong>612-720-4641</strong> · cassie.bonstrom@gmail.com</div>
-      <div class="notes">Session completed Jun 10. Harley loved it! Bonstrom family in Oregon this week — will be in touch week of Jun 30 to rebook.</div>
-      <div class="msgbox" id="msg-harley">Hi Ms. Bonstrom! This is Anna Panetta from Kick with Anna. Hope Oregon was fun! Would love to rebook a session with Harley whenever you are back and settled. What week works best? ⚽ Anna</div>
-      <button class="copybtn" onclick="copyMsg('msg-harley', this)">Copy Text</button>
+      <div class="notes">Session completed Jun 10. Harley loved it! Anna responded/texted Cassie today Jul 7 to rebook — hasn't heard back yet.</div>
     </div>
   </div>
 
@@ -258,17 +234,17 @@
     <tr><td>Jun 8</td><td>Sonja + 3 girls (6)</td><td>Cesley Bergsten</td><td>952-715-9588</td><td>Group</td><td class="st-rec">CONFIRMED · Recurring</td><td>Fri Jun 12 · 9am, then Fridays (skip wk of Jun 18)</td></tr>
     <tr><td>Jun 10</td><td>Ozan Ozturk (5)</td><td>Menevis</td><td>menevisc@gmail.com</td><td>Private</td><td class="st-conf">CONFIRMED</td><td>Sun Jun 14 · 5:30pm</td></tr>
     <tr><td>Jun 8</td><td>Hattie Chromiak (8)</td><td>Alissa Ochs</td><td>763-242-9947</td><td>Private · 45 min</td><td class="st-conf">COMPLETED</td><td>Fri Jun 26 · 3:00pm · Todd Park · Paid $12 ✓</td></tr>
-    <tr><td>Jun 8</td><td>Hannah (6)</td><td>Erin Chapin</td><td>952-200-3297</td><td>Private</td><td class="st-pend">PENDING – Anna followed up Jun 23</td><td>Jun 26 · 4:15pm proposed (no reply) · TBD</td></tr>
-    <tr><td>Jun 9</td><td>Harley + friend (6)</td><td>Cassie Bonstrom</td><td>612-720-4641</td><td>Private + Group</td><td class="st-pend">COMPLETED · Rebook wk Jun 30</td><td>Done Jun 10 · In Oregon this week · Rebook wk of Jun 30</td></tr>
+    <tr><td>Jun 8</td><td>Hannah (6)</td><td>Erin Chapin</td><td>952-200-3297</td><td>Private</td><td class="st-conf">CONFIRMED</td><td>Fri Jul 10 · 10:00am</td></tr>
+    <tr><td>Jun 9</td><td>Harley + friend (6)</td><td>Cassie Bonstrom</td><td>612-720-4641</td><td>Private + Group</td><td class="st-pend">PENDING – Anna texted Jul 7</td><td>Done Jun 10 · Rebook awaiting reply</td></tr>
     <tr><td>Jun 10</td><td>Sanchez (8)</td><td>Bianca Sanchez</td><td>sanchez.abx@gmail.com · 612-269-0022</td><td>Private</td><td class="st-pend">PENDING – Anna followed up Jun 23</td><td>TBD</td></tr>
-    <tr><td>Jun 10</td><td>Leyla (4)</td><td>Melissa</td><td>leamcali@gmail.com</td><td>Private</td><td class="st-pend">PENDING RESCHEDULE – date TBD</td><td>Jun 23 done ✓ · Jun 30 session rescheduled – new date TBD</td></tr>
+    <tr><td>Jun 10</td><td>Leyla (4)</td><td>Melissa</td><td>leamcali@gmail.com</td><td>Private</td><td class="st-conf">CONFIRMED</td><td>Jun 23 done ✓ · Tue Jul 14 · 10:30am</td></tr>
     <tr><td>Jun 10</td><td>Eleanor (7) + Margot (5)</td><td>Britta Anderson</td><td>anderson.britta.l@gmail.com</td><td>Group</td><td class="st-pend">PENDING RESCHEDULE</td><td>Jun 15 done · Jun 23 cancelled · Proposed Jun 29 12:30pm – out of town · Follow up wk of Jun 30</td></tr>
     <tr><td>Jun 10</td><td>Callan (9) + Andie (8)</td><td>Ashley O'Hearn</td><td>ashleyejames@yahoo.com</td><td>Group</td><td class="st-conf">CONFIRMED</td><td>Jun 13 done · Jun 26 done · Paid $20 ✓ · Sat Jul 11 10:50am upcoming</td></tr>
     <tr><td>Jun 11</td><td>Sydney (8)</td><td>Natalie Dunning</td><td>dunningnm@gmail.com · 952-240-7703</td><td>Private</td><td class="st-conf">CONFIRMED</td><td>Mon Jun 15 · 9am</td></tr>
-    <tr><td>Jun 12</td><td>Molly (10)</td><td>Kristyn Campbell</td><td>kristyncampbell1@gmail.com · 303-919-7071</td><td>Private</td><td class="st-conf">CONFIRMED</td><td>Thu Jun 25 · 11:00am · Todd Park · Paid $20 ✓</td></tr>
+    <tr><td>Jun 12</td><td>Molly (10)</td><td>Kristyn Campbell</td><td>kristyncampbell1@gmail.com · 303-919-7071</td><td>Private</td><td class="st-conf">COMPLETED</td><td>Thu Jun 25 · 11:00am · Todd Park · Paid $20 ✓</td></tr>
     <tr><td>Jun 12</td><td>Beau (4)</td><td>Courtney Giles</td><td>courtney.giles@abbott.com · 612-719-0287</td><td>Group</td><td class="st-pend">PENDING</td><td>Mon Jun 30 · 4:45pm (proposed)</td></tr>
     <tr><td>Jun 15</td><td>Olivia (9)</td><td>Brooke Gosse</td><td>brooke.baade@gmail.com · 605-999-2333</td><td>Private</td><td class="st-conf">COMPLETED</td><td>Jul 1 cancelled (heat) · Mon Jul 6 · 3:40pm done · Paid $12 ✓</td></tr>
-    <tr><td>Jun 15</td><td>Olivia + Eleanor (5)</td><td>Amanda Sperl</td><td>ajsperl@gmail.com · 320-249-2207</td><td>Group</td><td class="st-conf">CONFIRMED</td><td>Sat Jul 11 · 10:30am · Sat Aug 1 · 10:00am</td></tr>
+    <tr><td>Jun 15</td><td>Olivia + Eleanor (5)</td><td>Amanda Sperl</td><td>ajsperl@gmail.com · 320-249-2207</td><td>Group</td><td class="st-conf">CONFIRMED</td><td>Jul 11 cancelled · rescheduled to Sat Aug 1 · 10:00am</td></tr>
     <tr><td>Jun 20</td><td>Benji (5)</td><td>Erin Stockemer</td><td>479-285-1736</td><td>Group</td><td class="st-pend">PENDING – Awaiting reply</td><td>Fri Jun 26 · 5:15pm (proposed)</td></tr>
     <tr><td>Jun 23</td><td>George (7) + Henry (9)</td><td>Caroline Teasdale</td><td>carolineacarlson@gmail.com · 952-649-8134</td><td>Group</td><td class="st-pend">PENDING – Anna texted Jul 7</td><td>Mon–Thu · mornings or afternoons TBD</td></tr>
     <tr><td>Jul 7</td><td>Greta Seim (4) + friend</td><td>Brigitte Seim</td><td>bazimm@gmail.com · 650-492-0053</td><td>Group</td><td class="st-pend">PENDING – Anna texted Jul 7</td><td>All days · afternoon/evening TBD</td></tr>
